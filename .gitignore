@@ -1,0 +1,10 @@
+# Visual studio generated files
+/.vs
+*.sln
+*.VC.opendb
+*.vcxproj
+*.suo
+/Debug
+__vm/
+*.filters
+Settings.h
