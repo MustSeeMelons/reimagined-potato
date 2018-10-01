@@ -201,13 +201,13 @@ String Carousel::getMonth(int month) {
 		return "Sep";
 		break;
 	case 10:
-		return "Nov";
+		return "Oct";
 		break;
 	case 11:
-		return "Dec";
+		return "Nov";
 		break;
 	case 12:
-		return "Jan";
+		return "Dec";
 		break;
 	}
 }
