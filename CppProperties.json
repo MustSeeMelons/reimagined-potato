@@ -1,0 +1,48 @@
+{
+  "configurations": [
+    {
+      "name": "Visual Micro",
+      "intelliSenseMode": "windows-msvc-x86",
+      "includePath": [
+        "${projectRoot}..\\reimagined-potato",
+        "${projectRoot}..\\..\\Users\\Strau\\Documents\\Arduino\\libraries\\ArduinoJson\\src",
+        "${projectRoot}..\\..\\Users\\Strau\\AppData\\Local\\arduino15\\packages\\esp8266\\hardware\\esp8266\\3.0.0\\cores\\esp8266",
+        "${projectRoot}..\\..\\Users\\Strau\\AppData\\Local\\arduino15\\packages\\esp8266\\hardware\\esp8266\\3.0.0\\cores\\esp8266\\avr",
+        "${projectRoot}..\\..\\Users\\Strau\\AppData\\Local\\arduino15\\packages\\esp8266\\hardware\\esp8266\\3.0.0\\cores\\esp8266\\libb64",
+        "${projectRoot}..\\..\\Users\\Strau\\AppData\\Local\\arduino15\\packages\\esp8266\\hardware\\esp8266\\3.0.0\\cores\\esp8266\\spiffs",
+        "${projectRoot}..\\..\\Users\\Strau\\AppData\\Local\\arduino15\\packages\\esp8266\\hardware\\esp8266\\3.0.0\\cores\\esp8266\\umm_malloc",
+        "${projectRoot}..\\..\\Users\\Strau\\AppData\\Local\\arduino15\\packages\\esp8266\\hardware\\esp8266\\3.0.0\\variants\\nodemcu",
+        "${projectRoot}..\\..\\Users\\Strau\\AppData\\Local\\arduino15\\packages\\esp8266\\hardware\\esp8266\\3.0.0\\tools\\sdk\\include",
+        "${projectRoot}..\\..\\Users\\Strau\\AppData\\Local\\arduino15\\packages\\esp8266\\hardware\\esp8266\\3.0.0\\tools\\sdk\\lwip2\\include",
+        "${projectRoot}..\\..\\Users\\Strau\\AppData\\Local\\arduino15\\packages\\esp8266\\hardware\\esp8266\\3.0.0\\tools\\sdk\\libc\\xtensa-lx106-elf\\include",
+        "${projectRoot}..\\..\\Users\\Strau\\AppData\\Local\\arduino15\\packages\\esp8266\\tools\\xtensa-lx106-elf-gcc\\3.0.0-newlib4.0.0-gnu23-48f7b08\\xtensa-lx106-elf\\include\\c++\\4.8.2",
+        "${projectRoot}..\\..\\Users\\Strau\\AppData\\Local\\arduino15\\packages\\esp8266\\tools\\xtensa-lx106-elf-gcc\\3.0.0-newlib4.0.0-gnu23-48f7b08\\xtensa-lx106-elf\\include\\c++\\4.8.2\\xtensa-lx106-elf",
+        "${projectRoot}..\\..\\Users\\Strau\\AppData\\Local\\arduino15\\packages\\esp8266\\tools\\xtensa-lx106-elf-gcc\\3.0.0-newlib4.0.0-gnu23-48f7b08\\xtensa-lx106-elf\\include",
+        "${projectRoot}..\\..\\Users\\Strau\\AppData\\Local\\arduino15\\packages\\esp8266\\tools\\xtensa-lx106-elf-gcc\\3.0.0-newlib4.0.0-gnu23-48f7b08\\lib\\gcc\\xtensa-lx106-elf\\4.8.2\\include",
+        "${projectRoot}..\\..\\Users\\Strau\\AppData\\Local\\arduino15\\packages\\esp8266\\hardware\\esp8266\\3.0.0\\tools\\sdk\\include"
+      ],
+      "defines": [
+        "__ESP8266_esp8266__",
+        "__ESP8266_ESP8266__",
+        "__ets__",
+        "ICACHE_FLASH",
+        "MMU_IRAM_SIZE=0x8000",
+        "MMU_ICACHE_SIZE=0x8000",
+        "NONOSDK22x_190703=1",
+        "F_CPU=80000000L",
+        "LWIP_OPEN_SRC",
+        "TCP_MSS=536",
+        "LWIP_FEATURES=1",
+        "LWIP_IPV6=0",
+        "ARDUINO=108015",
+        "ARDUINO_ESP8266_NODEMCU_ESP12E",
+        "ARDUINO_ARCH_ESP8266",
+        "LED_BUILTIN=2",
+        "FLASHMODE_DIO",
+        "ESP8266",
+        "__cplusplus=201103L",
+        "_VMICRO_INTELLISENSE"
+      ]
+    }
+  ]
+}

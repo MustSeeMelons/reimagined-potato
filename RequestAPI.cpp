@@ -1,9 +1,12 @@
-#include "RequestAPI.h"
+﻿#include "RequestAPI.h"
+#define ARDUINOJSON_USE_LONG_LONG 1
 #include <ArduinoJson.h>
 #include "Settings.h"
+#include <WiFiClient.h>
 
-RequestAPI::RequestAPI(SDLogger* logger, Overlay* overlay, char* ssid, char* password) {
-	this->logger = logger;
+WiFiClient wifiClient;
+
+RequestAPI::RequestAPI(Overlay* overlay, char* ssid, char* password) {
 	this->overlay = overlay;
 	this->ssid = ssid;
 	this->password = password;
@@ -21,30 +24,30 @@ void RequestAPI::initAPI() {
 	overlay->infoMessage("..WiFi..");
 	if (this->connect()) {
 		overlay->infoMessage("WiFi OK");
-	} else {
+	}
+	else {
 		overlay->infoMessage("no WiFi connection");
 	}
 }
 
 bool RequestAPI::connect() {
-	this->logger->logMessage(String(millis()) + ": CONNECT_TO_WIFI");
 	WiFi.mode(WIFI_STA);
 	WiFi.begin(this->ssid, this->password);
 	unsigned long conStart = millis();
 	while (WiFi.status() != WL_CONNECTED) {
 		// delay is necessary here, otherwise the ESP keeps resetting..
 		delay(500);
+
 		if (WiFi.status() == WL_CONNECT_FAILED) {
-			this->logger->logMessage(String(millis()) + ": WIFI NOT OK");
 			overlay->addMessage("no WiFi");
 			return false;
 		}
-		if (abs(millis() - conStart) >= this->wifiTimeout) {
-			this->logger->logMessage(String(millis()) + ": WIFI TIMEOUT, RESETTING");
+
+		if (millis() - conStart >= this->wifiTimeout) {
 			ESP.restart();
 		}
 	}
-	this->logger->logMessage(String(millis()) + ": WIFI_OK");
+
 	overlay->removeMessage("no WiFi");
 	return true;
 }
@@ -54,7 +57,8 @@ String RequestAPI::performRequest(String url, char* host) {
 		if (this->connect()) {
 			overlay->infoMessage("WiFi OK");
 			overlay->removeMessage("no WiFi");
-		} else {
+		}
+		else {
 			overlay->addMessage("no WiFi");
 		}
 	}
@@ -62,16 +66,15 @@ String RequestAPI::performRequest(String url, char* host) {
 	HTTPClient http;
 	String response = "";
 
-	http.begin("http://" + String(host) + String(url));
+	http.begin(wifiClient, "http://" + String(host) + String(url));
 
 	int code = http.GET();
 
 	if (code > 0) {
 		response = http.getString();
-		this->logger->logMessage(String(millis()) + ": GET_DATA - " + response);
-	} else {
+	}
+	else {
 		overlay->addMessage("GET Failed: " + url);
-		this->logger->logMessage(String(millis()) + ": GET_FAILED - " + url);
 		return response;
 	}
 	http.end();
@@ -88,15 +91,15 @@ WeatherData RequestAPI::getWeatherData(String city) {
 
 	String response = this->performRequest(url, this->weatherHost);
 	if (response != "") {
-		StaticJsonBuffer<1000> jsonBuffer;
-		JsonObject& root = jsonBuffer.parseObject(response);
+		StaticJsonDocument<1000> jsonBuffer;
+		deserializeJson(jsonBuffer, response);
 
-		float temprature = root[String("main")][String("temp")].as<int>();
+		float temprature = jsonBuffer[String("main")][String("temp")].as<float>();
 
-		float rawWind = root[String("wind")][String("speed")].as<int>();
-		float rawDegrees = root[String("wind")][String("deg")].as<float>();
-		time_t rawSunrise = root[String("sys")][String("sunrise")].as<time_t>();
-		time_t rawSunset = root[String("sys")][String("sunset")].as<time_t>();
+		float rawWind = jsonBuffer[String("wind")][String("speed")].as<int>();
+		float rawDegrees = jsonBuffer[String("wind")][String("deg")].as<float>();
+		time_t rawSunrise = jsonBuffer[String("sys")][String("sunrise")].as<time_t>();
+		time_t rawSunset = jsonBuffer[String("sys")][String("sunset")].as<time_t>();
 
 		weatherData.temp = temprature;
 		weatherData.windSpeed = rawWind;
@@ -123,10 +126,11 @@ TimeData RequestAPI::getTimeData(String lat, String lng) {
 	String response = this->performRequest(url, this->timeHost);
 
 	if (response != "") {
-		StaticJsonBuffer<500> jsonBuffer;
-		JsonObject& root = jsonBuffer.parseObject(response);
-		String data = root[String("formatted")].as<String>();
-		float gmtOffset = root[String("gmtOffset")].as<int>();
+		StaticJsonDocument<500> jsonBuffer;
+		deserializeJson(jsonBuffer, response);
+		// JsonObject root = jsonBuffer.parseObject(response);
+		String data = jsonBuffer[String("formatted")].as<String>();
+		float gmtOffset = jsonBuffer[String("gmtOffset")].as<int>();
 
 		timeData.formattedDate = data;
 		timeData.gmtOffset = gmtOffset;
@@ -150,22 +154,18 @@ ForecastData RequestAPI::getForecastData(String lat, String lng) {
 	if (response != "") {
 		data.success = true;
 
-		DynamicJsonBuffer jsonBuffer;
-		JsonObject& root = jsonBuffer.parseObject(response);
-
-		if (!root.success()) {
-			this->logger->logMessage(String(millis()) + ": ERROR PARSING JSON");
-		}
+		DynamicJsonDocument  jsonBuffer(2048);
+		deserializeJson(jsonBuffer, response);
 
 		for (int i = 0; i < 2; i++) {
 			DayForecast forecast;
 
-			int minTemp = root[String("list")][i][String("temp")][String("min")].as<int>();
-			int maxTemp = root[String("list")][i][String("temp")][String("max")].as<int>();
-			int nightTemp = root[String("list")][i][String("temp")][String("night")].as<int>();
-			String icon = root[String("list")][i][String("weather")][0][String("icon")].as<String>();
-			int speed = root[String("list")][i][String("speed")].as<int>();
-			int deg = root[String("list")][i][String("deg")].as<int>();
+			int minTemp = jsonBuffer[String("list")][i][String("temp")][String("min")].as<int>();
+			int maxTemp = jsonBuffer[String("list")][i][String("temp")][String("max")].as<int>();
+			int nightTemp = jsonBuffer[String("list")][i][String("temp")][String("night")].as<int>();
+			String icon = jsonBuffer[String("list")][i][String("weather")][0][String("icon")].as<String>();
+			int speed = jsonBuffer[String("list")][i][String("speed")].as<int>();
+			int deg = jsonBuffer[String("list")][i][String("deg")].as<int>();
 
 			forecast.max = maxTemp;
 			forecast.min = minTemp;
@@ -177,7 +177,8 @@ ForecastData RequestAPI::getForecastData(String lat, String lng) {
 
 			if (i == 0) {
 				data.today = forecast;
-			} else {
+			}
+			else {
 				data.tomorrow = forecast;
 			}
 		}

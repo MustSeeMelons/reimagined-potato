@@ -1,27 +1,25 @@
-#include "Carousel.h"
+﻿#include "Carousel.h"
+#include "Settings.h"
 
 Carousel::Carousel(
 	RequestAPI* api,
 	Display* lcd,
 	Overlay* overlay,
-	SDLogger* logger,
 	unsigned long changeInterval,
 	unsigned long updateInterval,
 	int screenWidth,
-  int screenHeight) {
-
+	int screenHeight) {
 	this->api = api;
 	this->lcd = lcd;
 	this->overlay = overlay;
-	this->logger = logger;
 	this->changeInterval = changeInterval;
 	this->updateInterval = updateInterval;
-	this->changeStamp = 0;
-	this->updateStamp = 0;
+	this->changeStamp = 0L;
+	this->updateStamp = 0L;
 	this->index = 0;
 	this->count = 6;
-  this->screenWidth = screenWidth;
-  this->screenHeight = screenHeight;
+	this->screenWidth = screenWidth;
+	this->screenHeight = screenHeight;
 };
 
 void Carousel::init() {
@@ -29,8 +27,7 @@ void Carousel::init() {
 }
 
 void Carousel::update(bool force) {
-	if (abs(millis() - this->updateStamp) >= this->updateInterval || force) {
-		logger->logMessage(String(millis()) + ": UPDATE");
+	if (millis() - this->updateStamp >= this->updateInterval || force) {
 		this->updateDate();
 		delay(1000);
 		this->updateWeather();
@@ -38,15 +35,11 @@ void Carousel::update(bool force) {
 		this->updateForecast();
 		delay(1000);
 		this->updateStamp = millis();
-		logger->logMessage(String(updateStamp) + ": NEXT_UPDATE");
 	}
 }
 
 void Carousel::tick() {
-	if (abs(millis() - this->changeStamp) >= this->changeInterval) {
-		logger->logMessage(String(millis()) + ": CAROUSEL_TICK");
-		logger->logMessage(String(millis()) + ": FREE HEAP - " + String(system_get_free_heap_size()));
-
+	if (millis() - this->changeStamp >= this->changeInterval) {
 		this->lcd->clearScreen();
 		switch (this->index) {
 		case 0: // Show date
@@ -55,7 +48,8 @@ void Carousel::tick() {
 			}
 			if (this->dateString.length() == 9) {
 				this->lcd->drawText(this->dateString, 63, 105, this->randomColor());
-			} else if (dateString.length() == 8) {
+			}
+			else if (dateString.length() == 8) {
 				lcd->drawText(this->dateString, 73, 105, this->randomColor());
 			}
 			break;
@@ -63,11 +57,13 @@ void Carousel::tick() {
 			if (degreeString == "") {
 				break;
 			}
-      if (this->degreeString.length() == 4) {
-       this->lcd->drawText(this->degreeString, 115, 105, this->randomColor());
-      } else if (this->degreeString.length() == 3) {
+			if (this->degreeString.length() == 4) {
+				this->lcd->drawText(this->degreeString, 115, 105, this->randomColor());
+			}
+			else if (this->degreeString.length() == 3) {
 				this->lcd->drawText(this->degreeString, 126, 105, this->randomColor());
-			} else if (degreeString.length() == 2) {
+			}
+			else if (degreeString.length() == 2) {
 				this->lcd->drawText(this->degreeString, 136, 105, this->randomColor());
 			}
 			break;
@@ -77,9 +73,11 @@ void Carousel::tick() {
 			}
 			if (this->windString.length() == 7) {
 				this->lcd->drawText(this->windString, 84, 105, this->randomColor());
-			} else if (this->windString.length() == 8) {
+			}
+			else if (this->windString.length() == 8) {
 				this->lcd->drawText(this->windString, 73, 105, this->randomColor());
-			} else if (this->windString.length() == 9) {
+			}
+			else if (this->windString.length() == 9) {
 				this->lcd->drawText(this->windString, 63, 105, this->randomColor());
 			}
 			break;
@@ -116,57 +114,57 @@ void Carousel::tick() {
 		}
 		this->changeStamp = millis();
 		this->overlay->showMessage();
-		logger->logMessage(String(millis()) + ": NEXT_CAROUSEL_TICK: " + String(this->changeStamp));
 	}
 }
 
 void Carousel::updateDate() {
 	// 2017-06-30 15:09:41
-	this->tData = this->api->getTimeData("56.9496", "24.1052");
+	String lng = LNG;
+	String lat = LAT;
+	this->tData = this->api->getTimeData(lat, lng);
 	if (this->tData.success) {
-		this->logger->logMessage(String(millis()) + ": DATE_UPDATED");
 		int day = this->tData.formattedDate.substring(8, 10).toInt();
 		int month = this->tData.formattedDate.substring(5, 7).toInt();
 		this->dateString = String(day) + " of " + this->getMonth(month);
-	} else {
+	}
+	else {
 		this->overlay->addMessage("Time update failed");
-		this->logger->logMessage(String(millis()) + ": DATE_UPDATE_FAILED");
 	}
 }
 
 void Carousel::updateWeather() {
-	this->wData = this->api->getWeatherData("Riga");
+	String city = CITY;
+	this->wData = this->api->getWeatherData(city);
 	if (this->wData.success) {
-		this->logger->logMessage(String(millis()) + ": WEATHER_UPDATED");
 		this->degreeString = String(this->wData.temp) + "C";
 		this->windString = String(this->wData.windSpeed) + " m/s " + this->getWindDirection(this->wData.windDegrees);
 		this->sunriseString = this->currentTime(wData.sunrise + this->tData.gmtOffset);
 		this->sunsetString = this->currentTime(wData.sunset + this->tData.gmtOffset);
-	} else {
-		this->logger->logMessage(String(millis()) + ": WEATHER_UPDATE_FAILED");
+	}
+	else {
 		this->overlay->addMessage("Weather update failed");
 	}
 }
 
 void Carousel::updateForecast() {
-	this->fData = api->getForecastData("56.9496", "24.1052");
+	String lng = LNG;
+	String lat = LAT;
+	this->fData = api->getForecastData(lat, lng);
 	if (this->fData.success) {
 		DayForecast todayData = this->fData.today;
 		DayForecast tomorrowData = this->fData.tomorrow;
 
 		this->today.day = todayData.day;
-		this->today.temprature = todayData.max;
+		this->today.temprature = String(todayData.max);
 		this->today.icon = todayData.icon;
 		this->today.wind = String(todayData.speed) + " m/s " + this->getWindDirection(todayData.deg);
 
 		this->tomorrow.day = tomorrowData.day;
-		this->tomorrow.temprature = tomorrowData.max;
+		this->tomorrow.temprature = String(tomorrowData.max);
 		this->tomorrow.icon = tomorrowData.icon;
 		this->tomorrow.wind = String(tomorrowData.speed) + " m/s " + this->getWindDirection(tomorrowData.deg);
-
-		this->logger->logMessage(String(millis()) + ": FORECAST_UPDATED");
-	} else {
-		this->logger->logMessage(String(millis()) + ": FORECAST_UPDATE_FAILED");
+	}
+	else {
 		this->overlay->addMessage("Forecast update failed");
 	}
 }
@@ -215,25 +213,34 @@ String Carousel::getMonth(int month) {
 String Carousel::getWindDirection(float degrees) {
 	if (degrees >= 337.5 || degrees < 22.5) {
 		return "N";
-	} else if (degrees >= 22.5 && degrees < 67.5) {
+	}
+	else if (degrees >= 22.5 && degrees < 67.5) {
 		return "NE";
-	} else if (degrees >= 67.5 && degrees < 112.5) {
+	}
+	else if (degrees >= 67.5 && degrees < 112.5) {
 		return "E";
-	} else if (degrees >= 112.5 && degrees < 157.5) {
+	}
+	else if (degrees >= 112.5 && degrees < 157.5) {
 		return "SE";
-	} else if (degrees >= 157.5 && degrees < 202.5) {
+	}
+	else if (degrees >= 157.5 && degrees < 202.5) {
 		return "S";
-	} else if (degrees >= 202.5 && degrees < 247.5) {
+	}
+	else if (degrees >= 202.5 && degrees < 247.5) {
 		return "SW";
-	} else if (degrees >= 247.5 && degrees < 292.5) {
+	}
+	else if (degrees >= 247.5 && degrees < 292.5) {
 		return "W";
-	} else if (degrees >= 292.5 && degrees < 337.5) {
+	}
+	else if (degrees >= 292.5 && degrees < 337.5) {
 		return "NW";
-	} else {
+	}
+	else {
 		return String(degrees);
 	}
 }
 
+// TODO stupid name
 String Carousel::currentTime(time_t timestamp) {
 	int secondsOfDay = timestamp % 86400;
 	int minutesOfDay = secondsOfDay % 3600;
@@ -247,23 +254,32 @@ String Carousel::currentTime(time_t timestamp) {
 String Carousel::getWeatherDescription(String icon) {
 	if (icon == "01d" || icon == "01n") {
 		return "Clear";
-	} else if (icon == "02d" || icon == "02n") {
+	}
+	else if (icon == "02d" || icon == "02n") {
 		return "Clearly";
-	} else if (icon == "03d" || icon == "03n") {
+	}
+	else if (icon == "03d" || icon == "03n") {
 		return "Cloudy";
-	} else if (icon == "04d" || icon == "04n") {
+	}
+	else if (icon == "04d" || icon == "04n") {
 		return "Clouds";
-	} else if (icon == "09d" || icon == "09n") {
+	}
+	else if (icon == "09d" || icon == "09n") {
 		return "Showers";
-	} else if (icon == "10d" || icon == "10n") {
+	}
+	else if (icon == "10d" || icon == "10n") {
 		return "Rain";
-	} else if (icon == "11d" || icon == "11n") {
+	}
+	else if (icon == "11d" || icon == "11n") {
 		return "Storm";
-	} else if (icon == "13d" || icon == "13n") {
+	}
+	else if (icon == "13d" || icon == "13n") {
 		return "Snow";
-	} else if (icon == "50d" || icon == "50n") {
+	}
+	else if (icon == "50d" || icon == "50n") {
 		return "Mist";
-	} else {
+	}
+	else {
 		return "Derpy";
 	}
 }
@@ -271,4 +287,3 @@ String Carousel::getWeatherDescription(String icon) {
 uint16 Carousel::randomColor() {
 	return random(30000, 65535);
 }
-

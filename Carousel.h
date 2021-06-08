@@ -1,10 +1,9 @@
-#ifndef Carousel_h
+﻿#ifndef Carousel_h
 #define Carousel_h
 
 #include <Arduino.h>
 #include "Display.h"
 #include "RequestAPI.h"
-#include "SDLogger.h"
 
 extern "C" {
 #include "user_interface.h"
@@ -22,7 +21,6 @@ private:
 	RequestAPI* api;
 	Display* lcd;
 	Overlay* overlay;
-	SDLogger* logger;
 	unsigned long changeInterval;
 	unsigned long changeStamp;
 	unsigned long updateInterval;
@@ -39,14 +37,13 @@ private:
 	ForecastData fData;
 	DayStrings today;
 	DayStrings tomorrow;
-  int screenWidth;
-  int screenHeight;
+	int screenWidth;
+	int screenHeight;
 public:
 	Carousel(
 		RequestAPI* api,
 		Display* lcd,
 		Overlay* overlay,
-		SDLogger* logger,
 		unsigned long changeInterval,
 		unsigned long updateInterval,
 		int screenWidth,
