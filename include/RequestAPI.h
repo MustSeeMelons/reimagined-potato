@@ -5,16 +5,18 @@
 #include <ESP8266WiFi.h>
 #include "Overlay.h"
 
-struct WeatherData {
+struct WeatherData
+{
 	bool success;
 	int temp;
 	int windSpeed;
 	float windDegrees;
 	time_t sunrise; // UTC
-	time_t sunset; // UTC
+	time_t sunset;	// UTC
 };
 
-struct DayForecast {
+struct DayForecast
+{
 	String day;
 	int min;
 	int max;
@@ -24,35 +26,39 @@ struct DayForecast {
 	int deg;
 };
 
-struct ForecastData {
+struct ForecastData
+{
 	bool success;
 	DayForecast today;
 	DayForecast tomorrow;
 };
 
-struct TimeData {
+struct TimeData
+{
 	bool success;
 	String formattedDate;
 	int gmtOffset;
 };
 
-class RequestAPI {
+class RequestAPI
+{
 private:
-	Overlay* overlay;
-	char* ssid;
-	char* password;
-	char* weatherHost;
-	char* timeHost;
+	Overlay *overlay;
+	char *ssid;
+	char *password;
+	char *weatherHost;
+	char *timeHost;
 	String weatherAppId;
 	String timeAppId;
 	int port;
 	unsigned long wifiTimeout;
-	String dayStrings[3] = { "Today", "Tomorrow", "Day after" };
+	String dayStrings[3] = {"Today", "Tomorrow", "Day after"};
+
 public:
-	RequestAPI(Overlay* overlay, char* ssid, char* password);
+	RequestAPI(Overlay *overlay, char *ssid, char *password);
 	void initAPI();
 	bool connect();
-	String performRequest(String url, char* host);
+	String performRequest(String url, char *host);
 	WeatherData getWeatherData(String city);
 	TimeData getTimeData(String lat, String lng);
 	ForecastData getForecastData(String lat, String lng);

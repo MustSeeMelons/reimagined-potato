@@ -7,9 +7,11 @@
 #define GFXFF 1
 #define GLCD 1
 
-class Display {
+class Display
+{
 private:
   TFT_eSPI tft;
+
 public:
   Display();
   void init(); // must be called from Setup

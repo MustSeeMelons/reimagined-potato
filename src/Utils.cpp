@@ -1,7 +1,9 @@
 #include "Utils.h"
 
-String getMonth(int month) {
-	switch (month) {
+String getMonth(int month)
+{
+	switch (month)
+	{
 	case 1:
 		return "Jan";
 	case 2:
@@ -26,12 +28,13 @@ String getMonth(int month) {
 		return "Nov";
 	case 12:
 		return "Dec";
-    default:
-        return "nop";
+	default:
+		return "nop";
 	}
 }
 
-String formatTime(time_t timestamp) {
+String formatTime(time_t timestamp)
+{
 	int secondsOfDay = timestamp % 86400;
 	int minutesOfDay = secondsOfDay % 3600;
 	int hours = secondsOfDay / 3600;
@@ -41,77 +44,101 @@ String formatTime(time_t timestamp) {
 	return hString + ":" + mString;
 }
 
-String getWindDirection(float degrees) {
-	if (degrees >= 337.5 || degrees < 22.5) {
+String getWindDirection(float degrees)
+{
+	if (degrees >= 337.5 || degrees < 22.5)
+	{
 		return "N";
 	}
-	else if (degrees >= 22.5 && degrees < 67.5) {
+	else if (degrees >= 22.5 && degrees < 67.5)
+	{
 		return "NE";
 	}
-	else if (degrees >= 67.5 && degrees < 112.5) {
+	else if (degrees >= 67.5 && degrees < 112.5)
+	{
 		return "E";
 	}
-	else if (degrees >= 112.5 && degrees < 157.5) {
+	else if (degrees >= 112.5 && degrees < 157.5)
+	{
 		return "SE";
 	}
-	else if (degrees >= 157.5 && degrees < 202.5) {
+	else if (degrees >= 157.5 && degrees < 202.5)
+	{
 		return "S";
 	}
-	else if (degrees >= 202.5 && degrees < 247.5) {
+	else if (degrees >= 202.5 && degrees < 247.5)
+	{
 		return "SW";
 	}
-	else if (degrees >= 247.5 && degrees < 292.5) {
+	else if (degrees >= 247.5 && degrees < 292.5)
+	{
 		return "W";
 	}
-	else if (degrees >= 292.5 && degrees < 337.5) {
+	else if (degrees >= 292.5 && degrees < 337.5)
+	{
 		return "NW";
 	}
-	else {
+	else
+	{
 		return String(degrees);
 	}
 }
 
-String getWeatherDescription(String icon) {
-	if (icon == "01d" || icon == "01n") {
+String getWeatherDescription(String icon)
+{
+	if (icon == "01d" || icon == "01n")
+	{
 		return "Clear";
 	}
-	else if (icon == "02d" || icon == "02n") {
+	else if (icon == "02d" || icon == "02n")
+	{
 		return "Clearish";
 	}
-	else if (icon == "03d" || icon == "03n") {
+	else if (icon == "03d" || icon == "03n")
+	{
 		return "Cloudy";
 	}
-	else if (icon == "04d" || icon == "04n") {
+	else if (icon == "04d" || icon == "04n")
+	{
 		return "Clouds";
 	}
-	else if (icon == "09d" || icon == "09n") {
+	else if (icon == "09d" || icon == "09n")
+	{
 		return "Showers";
 	}
-	else if (icon == "10d" || icon == "10n") {
+	else if (icon == "10d" || icon == "10n")
+	{
 		return "Rain";
 	}
-	else if (icon == "11d" || icon == "11n") {
+	else if (icon == "11d" || icon == "11n")
+	{
 		return "Storm";
 	}
-	else if (icon == "13d" || icon == "13n") {
+	else if (icon == "13d" || icon == "13n")
+	{
 		return "Snow";
 	}
-	else if (icon == "50d" || icon == "50n") {
+	else if (icon == "50d" || icon == "50n")
+	{
 		return "Mist";
 	}
-	else {
+	else
+	{
 		return "Huh";
 	}
 }
 
-String getPadding(int count) {
-    String result = "";
-    for(int i = 0; i < count; i++) {
-        result += " ";
-    }
-    return result;
+String getPadding(int count)
+{
+	String result = "";
+	for (int i = 0; i < count; i++)
+	{
+		result += " ";
+	}
+	return result;
 }
 
-uint16 randomColor() {
+uint16 randomColor()
+{
 	return random(30000, 65535);
 }

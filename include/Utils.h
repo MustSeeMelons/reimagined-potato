@@ -3,18 +3,20 @@
 
 #include <Arduino.h>
 
-struct Current {
+struct Current
+{
     String degrees;
     String wind;
     String sunrise;
     String sunset;
 };
 
-struct Day {
+struct Day
+{
     String day;
-	String temprature;
-	String icon;
-	String wind;
+    String temprature;
+    String icon;
+    String wind;
 };
 
 /*

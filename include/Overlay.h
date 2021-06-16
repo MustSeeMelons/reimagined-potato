@@ -5,14 +5,16 @@
 #include <LinkedList.h>
 
 /* Debug/Info overlay */
-class Overlay {
+class Overlay
+{
 private:
-	Display* lcd;
+	Display *lcd;
 	LinkedList<String> messages;
 	int messageCounter;
 	bool debug;
+
 public:
-	Overlay(Display* lcd, bool debug);
+	Overlay(Display *lcd, bool debug);
 	void addMessage(String message);
 	void removeMessage(String message);
 	/* Shows one of the overlay messages, does not reset LCD */

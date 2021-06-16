@@ -6,7 +6,8 @@
 
 WiFiClient wifiClient;
 
-RequestAPI::RequestAPI(Overlay* overlay, char* ssid, char* password) {
+RequestAPI::RequestAPI(Overlay *overlay, char *ssid, char *password)
+{
 	this->overlay = overlay;
 	this->ssid = ssid;
 	this->password = password;
@@ -18,30 +19,37 @@ RequestAPI::RequestAPI(Overlay* overlay, char* ssid, char* password) {
 	this->wifiTimeout = 15000;
 };
 
-void RequestAPI::initAPI() {
+void RequestAPI::initAPI()
+{
 	overlay->infoMessage("..WiFi..");
-	if (this->connect()) {
+	if (this->connect())
+	{
 		overlay->infoMessage("WiFi OK");
 	}
-	else {
+	else
+	{
 		overlay->infoMessage("no WiFi connection");
 	}
 }
 
-bool RequestAPI::connect() {
+bool RequestAPI::connect()
+{
 	WiFi.mode(WIFI_STA);
 	WiFi.begin(this->ssid, this->password);
 	unsigned long conStart = millis();
-	while (WiFi.status() != WL_CONNECTED) {
+	while (WiFi.status() != WL_CONNECTED)
+	{
 		// delay is necessary here, otherwise the ESP keeps resetting..
 		delay(500);
 
-		if (WiFi.status() == WL_CONNECT_FAILED) {
+		if (WiFi.status() == WL_CONNECT_FAILED)
+		{
 			overlay->addMessage("no WiFi");
 			return false;
 		}
 
-		if (millis() - conStart >= this->wifiTimeout) {
+		if (millis() - conStart >= this->wifiTimeout)
+		{
 			return false;
 		}
 	}
@@ -50,35 +58,41 @@ bool RequestAPI::connect() {
 	return true;
 }
 
-String RequestAPI::performRequest(String url, char* host) {
+String RequestAPI::performRequest(String url, char *host)
+{
 	HTTPClient http;
 
-	if (WiFi.status() != WL_CONNECTED) {
-		if (this->connect()) {
+	if (WiFi.status() != WL_CONNECTED)
+	{
+		if (this->connect())
+		{
 			overlay->infoMessage("WiFi OK");
 			overlay->removeMessage("no WiFi");
 		}
-		else {
+		else
+		{
 			overlay->addMessage("no WiFi");
 		}
 	}
-	
+
 	String response = "";
 
 	http.begin(wifiClient, "http://" + String(host) + String(url));
 
 	int code = http.GET();
 
-	if (code > 0) {
+	if (code > 0)
+	{
 		response = http.getString();
 	}
-	
+
 	http.end();
 
 	return response;
 }
 
-WeatherData RequestAPI::getWeatherData(String city) {
+WeatherData RequestAPI::getWeatherData(String city)
+{
 	WeatherData weatherData;
 	weatherData.success = false;
 	String url = "/data/2.5/weather?q=";
@@ -87,7 +101,8 @@ WeatherData RequestAPI::getWeatherData(String city) {
 	url += "&units=metric";
 
 	String response = this->performRequest(url, this->weatherHost);
-	if (response != "") {
+	if (response != "")
+	{
 		StaticJsonDocument<1000> jsonBuffer;
 		deserializeJson(jsonBuffer, response);
 
@@ -109,7 +124,8 @@ WeatherData RequestAPI::getWeatherData(String city) {
 	return weatherData;
 }
 
-TimeData RequestAPI::getTimeData(String lat, String lng) {
+TimeData RequestAPI::getTimeData(String lat, String lng)
+{
 	TimeData timeData;
 	timeData.success = false;
 	String url = "/v2/get-time-zone?key=";
@@ -122,7 +138,8 @@ TimeData RequestAPI::getTimeData(String lat, String lng) {
 
 	String response = this->performRequest(url, this->timeHost);
 
-	if (response != "") {
+	if (response != "")
+	{
 		StaticJsonDocument<500> jsonBuffer;
 		deserializeJson(jsonBuffer, response);
 		// JsonObject root = jsonBuffer.parseObject(response);
@@ -137,7 +154,8 @@ TimeData RequestAPI::getTimeData(String lat, String lng) {
 	return timeData;
 }
 
-ForecastData RequestAPI::getForecastData(String lat, String lng) {
+ForecastData RequestAPI::getForecastData(String lat, String lng)
+{
 	ForecastData data;
 	data.success = false;
 
@@ -148,13 +166,15 @@ ForecastData RequestAPI::getForecastData(String lat, String lng) {
 	url += "&units=metric";
 
 	String response = this->performRequest(url, this->weatherHost);
-	if (response != "") {
+	if (response != "")
+	{
 		data.success = true;
 
-		DynamicJsonDocument  jsonBuffer(2048);
+		DynamicJsonDocument jsonBuffer(2048);
 		deserializeJson(jsonBuffer, response);
 
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 2; i++)
+		{
 			DayForecast forecast;
 
 			int minTemp = jsonBuffer[String("list")][i][String("temp")][String("min")].as<int>();
@@ -172,10 +192,12 @@ ForecastData RequestAPI::getForecastData(String lat, String lng) {
 			forecast.speed = speed;
 			forecast.deg = deg;
 
-			if (i == 0) {
+			if (i == 0)
+			{
 				data.today = forecast;
 			}
-			else {
+			else
+			{
 				data.tomorrow = forecast;
 			}
 		}

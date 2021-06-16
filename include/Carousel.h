@@ -9,11 +9,12 @@
 /*
 	Simple carousel, each slide contains a single data point
 */
-class Carousel {
+class Carousel
+{
 private:
-	RequestAPI* api;
-	Display* lcd;
-	Overlay* overlay;
+	RequestAPI *api;
+	Display *lcd;
+	Overlay *overlay;
 	unsigned long changeInterval;
 	unsigned long changeStamp;
 	unsigned long updateInterval;
@@ -30,14 +31,14 @@ private:
 	ForecastData fData;
 	Day today;
 	Day tomorrow;
+
 public:
 	Carousel(
-		RequestAPI* api,
-		Display* lcd,
-		Overlay* overlay,
+		RequestAPI *api,
+		Display *lcd,
+		Overlay *overlay,
 		unsigned long changeInterval,
-		unsigned long updateInterval
-		);
+		unsigned long updateInterval);
 	void init();
 	void tick(); // called in main loop to tick the logic along
 	void updateWeather();

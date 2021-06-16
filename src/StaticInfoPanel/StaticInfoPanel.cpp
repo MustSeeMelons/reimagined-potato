@@ -1,35 +1,41 @@
 #include "StaticInfoPanel.h"
 #include "Settings.h"
 
-StaticInfoPanel::StaticInfoPanel(RequestAPI* api,
-		Display* lcd,
-		Overlay* overlay,
-        unsigned long changeInterval,
-		unsigned long updateInterval) {
+StaticInfoPanel::StaticInfoPanel(RequestAPI *api,
+                                 Display *lcd,
+                                 Overlay *overlay,
+                                 unsigned long changeInterval,
+                                 unsigned long updateInterval)
+{
     this->api = api;
     this->lcd = lcd;
     this->overlay = overlay;
     this->changeInterval = changeInterval;
     this->updateInterval = updateInterval;
     this->changeStamp = 0L;
-	this->updateStamp = 0L;
+    this->updateStamp = 0L;
 }
 
-void StaticInfoPanel::init() {
+void StaticInfoPanel::init()
+{
     this->update(true);
 }
 
-void StaticInfoPanel::update(bool force) {
-    if(millis() - this->updateStamp >= this->updateInterval || force) {
+void StaticInfoPanel::update(bool force)
+{
+    if (millis() - this->updateStamp >= this->updateInterval || force)
+    {
         this->updateDate();
-		this->updateWeather();
-		this->updateForecast();
-		this->updateStamp = millis();
+        this->updateWeather();
+        this->updateForecast();
+        this->updateStamp = millis();
     }
 }
 
-void StaticInfoPanel::tick() {
-    if(millis() - this->changeStamp >= this->changeInterval) {
+void StaticInfoPanel::tick()
+{
+    if (millis() - this->changeStamp >= this->changeInterval)
+    {
         this->lcd->clearScreen();
 
         uint16 color = randomColor();
@@ -51,40 +57,35 @@ void StaticInfoPanel::tick() {
         String tomorrowTemprature = this->tomorrow.temprature + "C";
         String tomorrowDesc = getWeatherDescription(this->tomorrow.icon);
         String tomorrowWind = this->tomorrow.wind;
-        
+
         this->lcd->drawText18(
-            getPadding((int)((maxtitleLenght - title.length())/ 2)) + title,
+            getPadding((int)((maxtitleLenght - title.length()) / 2)) + title,
             0,
             titleOffset,
-            color
-        );
+            color);
 
         this->lcd->drawText12(
             today + getPadding(maxColLenght - today.length()) + tomorrow,
             colOffset,
             rowOffset * 2,
-            color
-        );
-        
+            color);
+
         this->lcd->drawText12(
             todayTemprature + getPadding(maxColLenght - todayTemprature.length()) + tomorrowTemprature,
             colOffset,
             rowOffset * 3,
-            color
-        );
-        
+            color);
+
         this->lcd->drawText12(todayDesc + getPadding(maxColLenght - todayDesc.length()) + tomorrowDesc,
-            colOffset,
-            rowOffset * 4,
-            color
-        );
-        
+                              colOffset,
+                              rowOffset * 4,
+                              color);
+
         this->lcd->drawText12(todayWind + getPadding(maxColLenght - todayWind.length()) + tomorrowWind,
-            colOffset,
-            rowOffset * 5,
-            color
-        );
-        
+                              colOffset,
+                              rowOffset * 5,
+                              color);
+
         this->lcd->drawText12("Sunrise: " + this->current.sunrise, colOffset, rowOffset * 7, color);
         this->lcd->drawText12("Sunset:  " + this->current.sunset, colOffset, rowOffset * 8, color);
 
@@ -93,53 +94,65 @@ void StaticInfoPanel::tick() {
     }
 }
 
-void StaticInfoPanel::updateDate() {
+void StaticInfoPanel::updateDate()
+{
     String lng = LNG;
-	String lat = LAT;
-	this->tData = this->api->getTimeData(lat, lng);
+    String lat = LAT;
+    this->tData = this->api->getTimeData(lat, lng);
 
-    if(this->tData.success) {
+    if (this->tData.success)
+    {
         int day = this->tData.formattedDate.substring(8, 10).toInt();
-		int month = this->tData.formattedDate.substring(5, 7).toInt();
+        int month = this->tData.formattedDate.substring(5, 7).toInt();
         this->dateString = String(day) + " of " + getMonth(month);
-    } else {
+    }
+    else
+    {
         this->overlay->addMessage("Date update failed");
     }
 }
 
-void StaticInfoPanel::updateWeather() {
+void StaticInfoPanel::updateWeather()
+{
     String city = CITY;
-	this->wData = this->api->getWeatherData(city);
-    if(this->wData.success) {
+    this->wData = this->api->getWeatherData(city);
+    if (this->wData.success)
+    {
         this->current.degrees = String(this->wData.temp) + "C";
         this->current.wind = String(this->wData.windSpeed) + " m/s " + getWindDirection(this->wData.windDegrees);
-		this->current.sunrise = formatTime(wData.sunrise + this->tData.gmtOffset);
-		this->current.sunset = formatTime(wData.sunset + this->tData.gmtOffset);
-    } else {
+        this->current.sunrise = formatTime(wData.sunrise + this->tData.gmtOffset);
+        this->current.sunset = formatTime(wData.sunset + this->tData.gmtOffset);
+    }
+    else
+    {
         this->overlay->addMessage("Current weather update failed");
     }
 }
 
-void StaticInfoPanel::updateForecast() {
+void StaticInfoPanel::updateForecast()
+{
     String lng = LNG;
-	String lat = LAT;
-	ForecastData fData = api->getForecastData(lat, lng);
+    String lat = LAT;
+    ForecastData fData = api->getForecastData(lat, lng);
     this->fData = fData;
-    
-    if(fData.success) {
+
+    if (fData.success)
+    {
         DayForecast todayData = this->fData.today;
-		DayForecast tomorrowData = this->fData.tomorrow;
+        DayForecast tomorrowData = this->fData.tomorrow;
 
-        	this->today.day = todayData.day;
-		this->today.temprature = String(todayData.max);
-		this->today.icon = todayData.icon;
-		this->today.wind = String(todayData.speed) + " m/s " + getWindDirection(todayData.deg);
+        this->today.day = todayData.day;
+        this->today.temprature = String(todayData.max);
+        this->today.icon = todayData.icon;
+        this->today.wind = String(todayData.speed) + " m/s " + getWindDirection(todayData.deg);
 
-		this->tomorrow.day = tomorrowData.day;
-		this->tomorrow.temprature = String(tomorrowData.max);
-		this->tomorrow.icon = tomorrowData.icon;
-		this->tomorrow.wind = String(tomorrowData.speed) + " m/s " + getWindDirection(tomorrowData.deg);
-    } else {
+        this->tomorrow.day = tomorrowData.day;
+        this->tomorrow.temprature = String(tomorrowData.max);
+        this->tomorrow.icon = tomorrowData.icon;
+        this->tomorrow.wind = String(tomorrowData.speed) + " m/s " + getWindDirection(tomorrowData.deg);
+    }
+    else
+    {
         this->overlay->addMessage("Forecast update failed");
     }
 }

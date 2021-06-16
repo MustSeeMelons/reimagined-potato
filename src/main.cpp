@@ -28,7 +28,7 @@
 #define SD_CS D0 // SS, Slave select
 
 const unsigned long updateInterval = 1000 * 60 * 20; // 20 minutes
-const unsigned long changeInterval = 1000 * 10; // 10 seconds
+const unsigned long changeInterval = 1000 * 10;		 // 10 seconds
 
 /* LCD management */
 Display lcd = Display();
@@ -37,22 +37,20 @@ Display lcd = Display();
 Overlay overlay = Overlay(&lcd, false);
 
 String city = CITY;
-char* ssid = WIFI_SSID;
-char* password = WIFI_PASS;
+char *ssid = WIFI_SSID;
+char *password = WIFI_PASS;
 
 RequestAPI api = RequestAPI(
 	&overlay,
 	ssid,
-	password
-);
+	password);
 
 StaticInfoPanel carousel = StaticInfoPanel(
 	&api,
 	&lcd,
 	&overlay,
 	changeInterval,
-	updateInterval
-);
+	updateInterval);
 
 // Carousel carousel = Carousel(
 // 	&api,
@@ -62,14 +60,16 @@ StaticInfoPanel carousel = StaticInfoPanel(
 // 	updateInterval
 // );
 
-void setup() {
+void setup()
+{
 	Serial.begin(9600);
 	lcd.init();
 	api.initAPI();
 	carousel.init();
 }
 
-void loop() {
+void loop()
+{
 	ESP.wdtFeed(); // Resets the watchdog timer, possibly
 	carousel.update(false);
 	carousel.tick();
