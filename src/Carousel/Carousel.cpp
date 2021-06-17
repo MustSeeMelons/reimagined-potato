@@ -144,6 +144,7 @@ void Carousel::updateDate()
 	this->tData = this->api->getTimeData(lat, lng);
 	if (this->tData.success)
 	{
+		this->overlay->removeMessage("Time update failed");
 		int day = this->tData.formattedDate.substring(8, 10).toInt();
 		int month = this->tData.formattedDate.substring(5, 7).toInt();
 		this->dateString = String(day) + " of " + getMonth(month);
@@ -160,6 +161,7 @@ void Carousel::updateWeather()
 	this->wData = this->api->getWeatherData(city);
 	if (this->wData.success)
 	{
+		this->overlay->removeMessage("Weather update failed");
 		this->degreeString = String(this->wData.temp) + "C";
 		this->windString = String(this->wData.windSpeed) + " m/s " + getWindDirection(this->wData.windDegrees);
 		this->sunriseString = formatTime(wData.sunrise + this->tData.gmtOffset);
@@ -178,6 +180,7 @@ void Carousel::updateForecast()
 	this->fData = api->getForecastData(lat, lng);
 	if (this->fData.success)
 	{
+		this->overlay->removeMessage("Forecast update failed");
 		DayForecast todayData = this->fData.today;
 		DayForecast tomorrowData = this->fData.tomorrow;
 

@@ -40,13 +40,15 @@ void StaticInfoPanel::tick()
 
         uint16 color = randomColor();
 
-        int titleOffset = 15;
-        int rowOffset = 25;
+        int titleOffset = 10;
+        int rowOffset = 24;
+        int forecastOffset = 26;
         int colOffset = 20;
         int maxtitleLenght = 15;
         int maxColLenght = 12;
 
         String title = this->current.degrees + ", " + this->current.wind;
+        String date = this->dateString;
 
         String today = this->today.day;
         String todayTemprature = this->today.temprature + "C";
@@ -59,35 +61,41 @@ void StaticInfoPanel::tick()
         String tomorrowWind = this->tomorrow.wind;
 
         this->lcd->drawText18(
-            getPadding((int)((maxtitleLenght - title.length()) / 2)) + title,
+            getPadding((int)((maxtitleLenght - dateString.length()) / 2)) + dateString,
             0,
             titleOffset,
             color);
 
+        this->lcd->drawText18(
+            getPadding((int)((maxtitleLenght - title.length()) / 2)) + title,
+            0,
+            40,
+            color);      
+
         this->lcd->drawText12(
             today + getPadding(maxColLenght - today.length()) + tomorrow,
             colOffset,
-            rowOffset * 2,
+            forecastOffset * 3,
             color);
 
         this->lcd->drawText12(
             todayTemprature + getPadding(maxColLenght - todayTemprature.length()) + tomorrowTemprature,
             colOffset,
-            rowOffset * 3,
+            forecastOffset * 4,
             color);
 
         this->lcd->drawText12(todayDesc + getPadding(maxColLenght - todayDesc.length()) + tomorrowDesc,
                               colOffset,
-                              rowOffset * 4,
+                              forecastOffset * 5,
                               color);
 
         this->lcd->drawText12(todayWind + getPadding(maxColLenght - todayWind.length()) + tomorrowWind,
                               colOffset,
-                              rowOffset * 5,
+                              forecastOffset * 6,
                               color);
 
-        this->lcd->drawText12("Sunrise: " + this->current.sunrise, colOffset, rowOffset * 7, color);
-        this->lcd->drawText12("Sunset:  " + this->current.sunset, colOffset, rowOffset * 8, color);
+        this->lcd->drawText12("Sunrise: " + this->current.sunrise, colOffset, rowOffset * 8, color);
+        this->lcd->drawText12("Sunset:  " + this->current.sunset, colOffset, rowOffset * 9, color);
 
         this->changeStamp = millis();
         this->overlay->showMessage();
@@ -102,6 +110,7 @@ void StaticInfoPanel::updateDate()
 
     if (this->tData.success)
     {
+         this->overlay->removeMessage("Date update failed");
         int day = this->tData.formattedDate.substring(8, 10).toInt();
         int month = this->tData.formattedDate.substring(5, 7).toInt();
         this->dateString = String(day) + " of " + getMonth(month);
@@ -118,6 +127,7 @@ void StaticInfoPanel::updateWeather()
     this->wData = this->api->getWeatherData(city);
     if (this->wData.success)
     {
+        this->overlay->removeMessage("Current weather update failed");
         this->current.degrees = String(this->wData.temp) + "C";
         this->current.wind = String(this->wData.windSpeed) + " m/s " + getWindDirection(this->wData.windDegrees);
         this->current.sunrise = formatTime(wData.sunrise + this->tData.gmtOffset);
@@ -138,6 +148,7 @@ void StaticInfoPanel::updateForecast()
 
     if (fData.success)
     {
+        this->overlay->removeMessage("Forecast update failed");
         DayForecast todayData = this->fData.today;
         DayForecast tomorrowData = this->fData.tomorrow;
 
