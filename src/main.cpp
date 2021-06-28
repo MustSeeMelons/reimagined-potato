@@ -30,9 +30,9 @@
    C/D - CLK
 */
 
-const unsigned long updateInterval = 1000 * 60 * 20;	  // 20 minutes
-const unsigned long changeInterval = 1000 * 10;			  // 10 seconds
-const unsigned long webWait = millis() + 1000 * 60 * 0.5; // now + 1 minutes
+const unsigned long updateInterval = 1000 * 60 * 20;	// 20 minutes
+const unsigned long changeInterval = 1000 * 10;			// 10 seconds
+const unsigned long webWait = millis() + 1000 * 60 * 5; // now + 5 minutes
 
 /* LCD management */
 Display lcd = Display();
