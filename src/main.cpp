@@ -46,7 +46,7 @@ char *password = WIFI_PASS;
 
 // Access point credentials
 const char *appSsid = "goose";
-const char *appPassword = "12345678";
+const char *appPassword = "";
 
 // AC defaults
 IPAddress ip(192, 168, 1, 1);
