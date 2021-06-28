@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main {
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            width: 100%;
+        }
+
+        .row {
+            padding: 10px;
+            box-sizing: border-box;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            width: 100%;
+        }
+
+        .success {
+            display: none;
+            background-color: #1ef801;
+            color: #ffffff;
+            text-transform: uppercase;
+            text-align: center;
+            font-weight: 700;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .show-success {
+            display: inline-block;
+        }
+
+        @media only screen and (min-width: 300px) {
+            .main {
+                max-width: 300px;
+            }
+        }
+
+    </style>
+    <body>
+        <form class="main" action="submit">
+                <div class="row">
+                    <label for="ssid">SSID:</label>
+                    <input id="ssid" name="ssid" type="text" value="{{ssid}}">
+                </div>
+                <div class="row">
+                    <label for="password">Password:</label>
+                    <input id="password" name="password" type="text" value="{{password}}">
+                </div>
+                <div class="row">
+                    <label for="city">City:</label>
+                    <input id="city" name="city" type="text" value="{{city}}">
+                </div>
+                <div class="row">
+                    <label for="lon">Longitude:</label>
+                    <input id="lon" name="lon" type="text" value="{{lon}}">
+                </div>
+                <div class="row">
+                    <label for="lat">Lattitude:</label>
+                    <input id="lat" name="lat" type="text" value="{{lat}}">
+                </div>
+                <button>Submit</button>
+                <div class="success {{success}}">
+                    success!
+                </div>
+        </form>
+    </body>
+</html>

@@ -43,7 +43,7 @@ struct TimeData
 class RequestAPI
 {
 private:
-	Overlay *overlay;
+	DebugUtils::Overlay *overlay;
 	char *ssid;
 	char *password;
 	char *weatherHost;
@@ -52,10 +52,10 @@ private:
 	String timeAppId;
 	int port;
 	unsigned long wifiTimeout;
-	String dayStrings[3] = {"Today", "Tomorrow", "Day after"};
+	String dayStrings[2] = {"Today", "Tomorrow"};
 
 public:
-	RequestAPI(Overlay *overlay, char *ssid, char *password);
+	RequestAPI(DebugUtils::Overlay *overlay, char *ssid, char *password);
 	void initAPI();
 	bool connect();
 	String performRequest(String url, char *host);

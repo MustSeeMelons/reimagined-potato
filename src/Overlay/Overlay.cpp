@@ -3,14 +3,14 @@
 
 int maxMessageLenght = 30;
 
-Overlay::Overlay(Display *lcd, bool debug)
+DebugUtils::Overlay::Overlay(Display *lcd, bool debug)
 {
 	this->lcd = lcd;
 	this->debug = debug;
 	this->messageCounter = 0;
 };
 
-void Overlay::addMessage(String message)
+void DebugUtils::Overlay::addMessage(String message)
 {
 	if (this->debug == false)
 		return;
@@ -29,7 +29,7 @@ void Overlay::addMessage(String message)
 	}
 }
 
-void Overlay::removeMessage(String message)
+void DebugUtils::Overlay::removeMessage(String message)
 {
 	if (this->debug == false)
 		return;
@@ -43,7 +43,7 @@ void Overlay::removeMessage(String message)
 	}
 }
 
-void Overlay::showMessage()
+void DebugUtils::Overlay::showMessage()
 {
 	if (this->debug == false)
 		return;
@@ -62,7 +62,7 @@ void Overlay::showMessage()
 	}
 }
 
-void Overlay::infoMessage(String message)
+void DebugUtils::Overlay::infoMessage(String message)
 {
 	this->lcd->clearScreen();
 	this->lcd->drawText9(
@@ -73,7 +73,7 @@ void Overlay::infoMessage(String message)
 	delay(1000);
 }
 
-void Overlay::resetMessages()
+void DebugUtils::Overlay::resetMessages()
 {
 	if (this->debug == false)
 		return;

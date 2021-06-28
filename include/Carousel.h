@@ -5,6 +5,7 @@
 #include "Display.h"
 #include "RequestAPI.h"
 #include "Utils.h"
+#include "Overlay.h"
 
 /*
 	Simple carousel, each slide contains a single data point
@@ -14,7 +15,7 @@ class Carousel
 private:
 	RequestAPI *api;
 	Display *lcd;
-	Overlay *overlay;
+	DebugUtils::Overlay *overlay;
 	unsigned long changeInterval;
 	unsigned long changeStamp;
 	unsigned long updateInterval;
@@ -36,7 +37,7 @@ public:
 	Carousel(
 		RequestAPI *api,
 		Display *lcd,
-		Overlay *overlay,
+		DebugUtils::Overlay *overlay,
 		unsigned long changeInterval,
 		unsigned long updateInterval);
 	void init();

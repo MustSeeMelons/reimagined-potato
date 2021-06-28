@@ -3,7 +3,7 @@
 
 StaticInfoPanel::StaticInfoPanel(RequestAPI *api,
                                  Display *lcd,
-                                 Overlay *overlay,
+                                 DebugUtils::Overlay *overlay,
                                  unsigned long changeInterval,
                                  unsigned long updateInterval)
 {
@@ -70,7 +70,7 @@ void StaticInfoPanel::tick()
             getPadding((int)((maxtitleLenght - title.length()) / 2)) + title,
             0,
             40,
-            color);      
+            color);
 
         this->lcd->drawText12(
             today + getPadding(maxColLenght - today.length()) + tomorrow,
@@ -110,7 +110,7 @@ void StaticInfoPanel::updateDate()
 
     if (this->tData.success)
     {
-         this->overlay->removeMessage("Date update failed");
+        this->overlay->removeMessage("Date update failed");
         int day = this->tData.formattedDate.substring(8, 10).toInt();
         int month = this->tData.formattedDate.substring(5, 7).toInt();
         this->dateString = String(day) + " of " + getMonth(month);

@@ -5,6 +5,7 @@
 #include "Display.h"
 #include "RequestAPI.h"
 #include "Utils.h"
+#include "Overlay.h"
 
 /*
     Some constant info with fewer info slides.
@@ -14,7 +15,7 @@ class StaticInfoPanel
 private:
     RequestAPI *api;
     Display *lcd;
-    Overlay *overlay;
+    DebugUtils::Overlay *overlay;
     unsigned long changeInterval;
     unsigned long changeStamp;
     unsigned long updateInterval;
@@ -33,7 +34,7 @@ public:
     StaticInfoPanel(
         RequestAPI *api,
         Display *lcd,
-        Overlay *overlay,
+        DebugUtils::Overlay *overlay,
         unsigned long changeInterval,
         unsigned long updateInterval);
     void init();

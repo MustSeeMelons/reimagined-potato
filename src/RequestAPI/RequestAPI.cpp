@@ -6,7 +6,7 @@
 
 WiFiClient wifiClient;
 
-RequestAPI::RequestAPI(Overlay *overlay, char *ssid, char *password)
+RequestAPI::RequestAPI(DebugUtils::Overlay *overlay, char *ssid, char *password)
 {
 	this->overlay = overlay;
 	this->ssid = ssid;

@@ -4,7 +4,7 @@
 Carousel::Carousel(
 	RequestAPI *api,
 	Display *lcd,
-	Overlay *overlay,
+	DebugUtils::Overlay *overlay,
 	unsigned long changeInterval,
 	unsigned long updateInterval)
 {
