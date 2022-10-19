@@ -14,6 +14,7 @@ StaticInfoPanel::StaticInfoPanel(RequestAPI *api,
     this->updateInterval = updateInterval;
     this->changeStamp = 0L;
     this->updateStamp = 0L;
+    this->updateDone = false;
 }
 
 void StaticInfoPanel::init()
@@ -29,6 +30,7 @@ void StaticInfoPanel::update(bool force)
         this->updateWeather();
         this->updateForecast();
         this->updateStamp = millis();
+        this->updateDone = true;
     }
 }
 
@@ -36,7 +38,10 @@ void StaticInfoPanel::tick()
 {
     if (millis() - this->changeStamp >= this->changeInterval)
     {
-        this->lcd->clearScreen();
+        if(this->updateDone) {
+             this->lcd->clearScreen();
+            this->updateDone = false;
+        }
 
         uint16 color = randomColor();
 

@@ -29,7 +29,7 @@ private:
     Current current;
     Day today;
     Day tomorrow;
-
+    bool updateDone;
 public:
     StaticInfoPanel(
         RequestAPI *api,

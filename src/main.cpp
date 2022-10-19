@@ -32,7 +32,7 @@
 
 const unsigned long updateInterval = 1000 * 60 * 20;	// 20 minutes
 const unsigned long changeInterval = 1000 * 10;			// 10 seconds
-const unsigned long webWait = millis() + 1000 * 60 * 5; // now + 5 minutes
+const unsigned long webWait = 0; // millis() + 1000 * 60 * 5; // now + 5 minutes
 
 /* LCD management */
 Display lcd = Display();
